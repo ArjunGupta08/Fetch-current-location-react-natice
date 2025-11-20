@@ -1,18 +1,8 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
 
 import {
   SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
-  Text,
   useColorScheme
 } from 'react-native';
 
@@ -21,6 +11,8 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import LocationSelectionScreen from './src/LocationScreen';
 import GetCurrentLocation from './src/GetCurrentLocation';
+import LocationDropDown from './src/LocationDropDown';
+import LocationFilteredDropDown from './src/LocationFilteredDropDown';
 
 
 function App(): React.JSX.Element {
@@ -33,7 +25,7 @@ function App(): React.JSX.Element {
   return (
     <SafeAreaView style={backgroundStyle}>
 
-      <GetCurrentLocation />
+      <LocationFilteredDropDown />
     </SafeAreaView>
   );
 }

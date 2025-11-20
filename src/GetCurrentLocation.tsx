@@ -1,7 +1,10 @@
 import Geolocation from "@react-native-community/geolocation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+import { Picker } from '@react-native-picker/picker';
+import { useForm, Controller } from 'react-hook-form';
+import axios from "axios";
 
 const { height, width } = Dimensions.get('window');
 
@@ -27,13 +30,13 @@ const GetCurrentLocation = () => {
                 setLat(pos.coords.latitude);
                 setLong(pos.coords.longitude);
                 console.log("Lat: ", lat);
-                console.log("Long: ", long);    
-                setError(`lat :  ${lat}, long: ${long}`);        
+                console.log("Long: ", long);
+                setError(`lat :  ${lat}, long: ${long}`);
             },
             err => console.log(err),
             { enableHighAccuracy: true }
         );
-        const address = await reverseGeocode(lat, long);
+        await reverseGeocode(lat, long);
         // console.log("Address: ", address);    
     };
 
@@ -58,17 +61,18 @@ const GetCurrentLocation = () => {
     };
 
     return (
-        <View style={style.container}>
-            <Text style={style.addressTxt}> {error} </Text>
-            <TouchableOpacity style={style.button} onPress={fetchLocation}>
-                <Text style={style.buttonTxt}>Fetch coords</Text>
+        <View style={styles.container}>
+            <Text style={styles.addressTxt}> {error} </Text>
+            <TouchableOpacity style={styles.button} onPress={fetchLocation}>
+                <Text style={styles.buttonTxt}>Fetch coords</Text>
             </TouchableOpacity>
-            <Text style={style.addressTxt}> {city} , {state}, {country}, {pincode}, {display}. </Text>
+            <Text style={styles.addressTxt}> {city} , {state}, {country}, {pincode}, {display}. </Text>
+
         </View>
     );
 };
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         padding: 20,
         backgroundColor: '#432727ff',
@@ -89,11 +93,47 @@ const style = StyleSheet.create({
         fontWeight: '600',
     },
     addressTxt: {
-        fontSize:16,
+        fontSize: 16,
         color: '#fff',
-        width: width*0.8,
+        width: width * 0.8,
         fontWeight: 700,
-        margin:20
+        margin: 20
+    },
+    inputContainer: {
+        marginBottom: 20,
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: '600',
+        marginBottom: 8,
+        color: '#333',
+    },
+    pickerContainer: {
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        position: 'relative',
+    },
+    picker: {
+        height: 50,
+    },
+    pickerLoader: {
+        position: 'absolute',
+        right: 10,
+        top: 12,
+    },
+    textInput: {
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        padding: 12,
+        fontSize: 16,
+        height: 50,
+    },
+    textArea: {
+        height: 100,
     }
 });
 
