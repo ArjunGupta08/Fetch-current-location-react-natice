@@ -9,10 +9,11 @@ import {
 import {
   Colors
 } from 'react-native/Libraries/NewAppScreen';
-import LocationSelectionScreen from './src/LocationScreen';
+
 import GetCurrentLocation from './src/GetCurrentLocation';
 import LocationDropDown from './src/LocationDropDown';
 import LocationFilteredDropDown from './src/LocationFilteredDropDown';
+import PayToPaytm from './src/PayToPaytm';
 
 
 function App(): React.JSX.Element {
@@ -25,7 +26,8 @@ function App(): React.JSX.Element {
   return (
     <SafeAreaView style={backgroundStyle}>
 
-      <LocationFilteredDropDown />
+      <PayToPaytm />
+
     </SafeAreaView>
   );
 }
