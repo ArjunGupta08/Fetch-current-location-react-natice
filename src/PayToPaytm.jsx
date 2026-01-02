@@ -8,12 +8,13 @@ const { height, width } = Dimensions.get('window');
 const PayToPaytm = () => {
 
     const [name, setName] = useState("");
-    const [amount, setAmount] = useState("");
-    const userId = 12345;
+    const [inputAmount, setAmount] = useState("");
+    const userId = "userId_01";
 
-    const [orderId, setOrderId] = useState('');
-    const mid = "YOUR_MID_HERE";  // ❗ IMPORTANT: replace with your actual MID
-    const [txnToken, setTxnToken] = useState("");
+    // const [orderId, setOrderId] = useState('ORDER_1767335561613');
+    // const [txnToken, setTxnToken] = useState("d9b3b8f1bb354cfc8a0396dc1b1d655d1767335562264");
+
+    const mid = "ylBDXK93662672367348";  // ❗ IMPORTANT: replace with your actual MID
     const isStaging = true;
     const appInvokeRestricted = false;
     const urlScheme = "";
@@ -23,20 +24,21 @@ const PayToPaytm = () => {
     // -------------------------------
     const getTxnToken = async () => {
         try {
+            console.log("getTxnToken called");
             const response = await axios.post(
-                "http://10.0.2.2:8080/payment/start",
-                { userId: userId, amount: amount }
+                "https://api.milkjatt.com/auth/initiatePayments/paytm",
+                { amount: inputAmount, userId: userId }
             );
 
-            const data = response.data;
+            const { orderId, txnToken, amount } = response.data;
 
-            setOrderId(data.orderId);
-            setTxnToken(data.txnToken);
+            // setOrderId();
+            // setTxnToken("d9b3b8f1bb354cfc8a0396dc1b1d655d1767335562264");
 
-            const callbackUrl =
-                `https://securestage.paytmpayments.com/theia/paytmCallback?ORDER_ID=${data.orderId}`;
-
-            startPaytmPayment(data.orderId, data.txnToken, callbackUrl);
+            // const callbackUrl =
+            //     `https://securestage.paytmpayments.com/theia/paytmCallback?ORDER_ID=${orderId}`;
+            const callbackUrl = "https://api.milkjatt.com/auth/paytm/callback";
+            startPaytmPayment(orderId, txnToken, callbackUrl);
 
         } catch (error) {
             console.log("Error fetching token:", error);
@@ -48,6 +50,10 @@ const PayToPaytm = () => {
     // 2️⃣ Start Payment via SDK
     // -------------------------------
     const startPaytmPayment = (orderId, txnToken, callbackUrl) => {
+        console.log("amount: ", amount);
+        console.log("OrderId: ", orderId);
+        console.log("txnToken: ", txnToken);
+
         AllInOneSDKManager.startTransaction(
             orderId,
             mid,
@@ -63,7 +69,7 @@ const PayToPaytm = () => {
 
                 // call validate payment if user didn't cancel
                 if (result.STATUS !== "TXN_CANCELLED") {
-                    await validatePayment(orderId);
+                    // await validatePayment(orderId);
                 } else {
                     Alert.alert("Payment Cancelled", "You cancelled the payment.");
                 }
@@ -111,7 +117,7 @@ const PayToPaytm = () => {
                 style={styles.textInput}
                 placeholder="Enter Amount"
                 keyboardType="numeric"
-                value={amount}
+                value={inputAmount}
                 onChangeText={(text) => setAmount(text)} />
 
             <TouchableOpacity style={styles.button} onPress={getTxnToken}>
